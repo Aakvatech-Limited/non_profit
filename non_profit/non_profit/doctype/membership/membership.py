@@ -402,12 +402,52 @@ def get_plan_from_razorpay_id(plan_id):
 
 
 def set_expired_status():
-	frappe.db.sql("""
-		UPDATE
-			`tabMembership` SET `status` = 'Expired'
-		WHERE
-			`status` not in ('Cancelled') AND `to_date` < %s
-		""", (nowdate()))
+    # Update expired memberships
+    frappe.db.sql("""
+        UPDATE
+            `tabMembership`
+        SET 
+            `membership_status` = 'Expired'
+        WHERE
+            `membership_status` NOT IN ('Cancelled') AND `to_date` < %s
+    """, (nowdate(),))
+    
+    # Handle auto-renewal for eligible members
+    auto_renewal_membership()
+
+
+def auto_renewal_membership():
+    # Fetch members with auto-subscription enabled
+    members = frappe.db.get_all(
+        "Member",
+        filters={'custom_auto_subscription': 1},
+        fields=['member_name']
+    )
+
+    for member in members:
+        # Fetch expired memberships for the member
+        expired_records = frappe.db.sql(
+            """
+            SELECT name, to_date
+            FROM `tabMembership`
+            WHERE `membership_status` = 'Expired' AND `member_name` = %s
+            """,
+            (member['member_name'],),
+            as_dict=True
+        )
+
+        for record in expired_records:
+            # Calculate new dates for renewal
+            name = record['name']
+            nto_date = record['to_date']
+            from_date = nto_date
+            to_date = frappe.utils.add_years(from_date, 1)
+
+            # Update membership with new dates
+            frappe.db.set_value('Membership', name, {
+                'from_date': from_date,
+                'to_date': to_date
+            })
 
 
 def get_last_membership(member):
