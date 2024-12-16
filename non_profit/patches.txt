@@ -1,1 +1,2 @@
 non_profit.patches.rename_non_profit_fields
+non_profit.patches.create_auto_renewal_automation_custom_field
