@@ -11,5 +11,28 @@ frappe.listview_settings['Membership'] = {
 		} else {
 			return [__('Cancelled'), 'red', 'membership_status,=,Cancelled'];
 		}
-	}
+	},
+    onload: function (listview) {
+        listview.page.add_menu_item(__('Bulk Invoicing'), async function () {
+            const selected_docs = listview.get_checked_items();
+            if (selected_docs.length === 0) {
+                frappe.msgprint(__('Please select at least one document.'));
+                return;
+            }
+			frappe.call({
+				method: 'non_profit.non_profit.doctype.membership.membership.generate_bulk_invoice',
+				args: {
+					doc: selected_docs
+				},
+				freeze: true,
+				freeze_message: __("Creating Bulk Membership Invoice"),
+				callback: function(r) {
+					if (r.invoice)
+						frappe.msgprint(_("Sales Invoice created successfully"))
+				}
+			   });
+			console.log(selected_docs);
+			
+        });
+    }
 };
