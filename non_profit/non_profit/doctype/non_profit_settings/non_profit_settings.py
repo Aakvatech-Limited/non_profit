@@ -5,6 +5,7 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
+from frappe.utils import add_days, add_months, add_years, get_link_to_form, getdate, nowdate
 
 from payments.utils import get_payment_gateway_controller
 
@@ -30,6 +31,11 @@ class NonProfitSettings(Document):
 	def get_webhook_secret(self, endpoint="Membership"):
 		fieldname = "membership_webhook_secret" if endpoint == "Membership" else "donation_webhook_secret"
 		return self.get_password(fieldname=fieldname, raise_exception=False)
+	def validate(self):
+		if frappe.db.get_single_value("Non Profit Settings", "billing_cycle") == "Yearly":
+			self.end_date = add_years(self.start_date, 1)
+		else:
+			self.end_date = add_months(self.end_date, 1)
 
 @frappe.whitelist()
 def get_plans_for_membership(*args, **kwargs):

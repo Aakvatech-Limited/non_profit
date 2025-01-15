@@ -437,11 +437,12 @@ def auto_renewal_membership():
         )
 
         for record in expired_records:
+            start_date, end_date = frappe.db.get_value('Non Profit Settings', ['start_date', 'end_date'])
+            
             # Calculate new dates for renewal
             name = record['name']
-            nto_date = record['to_date']
-            from_date = nto_date
-            to_date = frappe.utils.add_years(from_date, 1)
+            from_date = start_date
+            to_date = end_date
 
             # Update membership with new dates
             frappe.db.set_value('Membership', name, {
@@ -462,7 +463,7 @@ def get_last_membership(member):
 
 
 @frappe.whitelist()
-def generate_bulk_invoice(doc, save=True, with_payment_entry=False):
+def generate_bulk_invoice(doc, self, save=True, with_payment_entry=False):
     # frappe.throw(str(doc))
 
     # Fetch members linked to this employer
@@ -486,7 +487,14 @@ def generate_bulk_invoice(doc, save=True, with_payment_entry=False):
                          .format(frappe.bold(member['member_name'])))
 
         # Fetch membership details
-        membership_doc = frappe.db.exists("Membership", {'member': member['name']})
+        membership_doc = frappe.db.exists(
+						"Membership",
+						{
+							'member': member['name'],
+							'membership_status': ['=', 'Current']
+						}
+					)
+
         if not membership_doc:
             # frappe.msgprint(_("Membership not found for member {0}. Skipping.".format(member['member_name'])))
             continue
@@ -534,7 +542,7 @@ def generate_bulk_invoice(doc, save=True, with_payment_entry=False):
         
         # Update member record
         frappe.db.set_value("Membership", membership_doc.name, {
-            'paid': 1,
+            
             'invoice': invoice.name
         })
 

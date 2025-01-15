@@ -232,7 +232,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-03-11 10:43:38.124240",
+ "modified": "2025-01-12 17:32:11.613827",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Non Profit Settings",
@@ -269,5 +269,6 @@
  "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

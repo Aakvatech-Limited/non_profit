@@ -19,5 +19,25 @@ frappe.ui.form.on('Member Employer', {
 				});
             });
         }
+		if (frm.doc.invoice) {
+			frappe.call({
+				method: 'frappe.client.get_value',
+				args: {
+					doctype: 'Sales Invoice',
+					filters: { name: frm.doc.invoice, status: 'Paid' },
+					fieldname: ['status']
+				},
+				callback: function(r) {
+					if (r.message && r.message.status) {
+						const status = r.message.status;
+						if (status === 'Paid') {
+							frm.set_value('paid', 1);
+							frm.save();
+						}
+					}
+				}
+			});
+		}
+		
     }
 });

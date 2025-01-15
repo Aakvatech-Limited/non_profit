@@ -87,12 +87,10 @@ class MemberEmployer(Document):
         frappe.msgprint(_("Sales Invoice created successfully"))
         self.reload()
         self.invoice = invoice.name
-        self.paid = 1
         
         for member in members:
             membership_doc = frappe.get_doc("Membership", {'member': member['name']})
-            frappe.db.set_value("Membership", membership_doc.name, {
-                'paid': 1,
+            frappe.db.set_value("Membership", membership_doc.name, {                
                 'invoice': invoice.name
             })
 

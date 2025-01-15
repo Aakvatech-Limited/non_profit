@@ -37,5 +37,27 @@ frappe.ui.form.on('Membership', {
 
 	onload: function(frm) {
 		frm.add_fetch("membership_type", "amount", "amount");
+		if (frm.doc.invoice) {
+			frappe.call({
+				method: 'frappe.client.get_value',
+				args: {
+					doctype: 'Sales Invoice',
+					filters: { name: frm.doc.invoice, status: 'Paid' },
+					fieldname: ['status']
+				},
+				callback: function(r) {
+					if (r.message && r.message.status) {
+						const status = r.message.status;
+						if (status === 'Paid') {
+							frm.set_value('paid', 1);
+						}
+						if (frm.doc.paid === 1) {
+							frm.set_value('membership_status', 'Current');
+							frm.save();
+						}
+					}
+				}
+			});
+		}
 	}
 });
