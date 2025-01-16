@@ -27,7 +27,8 @@
    "fieldname": "invoice",
    "fieldtype": "Link",
    "label": "Invoice",
-   "options": "Sales Invoice"
+   "options": "Sales Invoice",
+   "read_only": 1
   },
   {
    "fieldname": "currency",
@@ -43,7 +44,8 @@
    "default": "0",
    "fieldname": "paid",
    "fieldtype": "Check",
-   "label": "Paid"
+   "label": "Paid",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_o5qep",
@@ -52,7 +54,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-24 10:33:48.339970",
+ "modified": "2025-01-16 10:08:14.843127",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Member Employer",
