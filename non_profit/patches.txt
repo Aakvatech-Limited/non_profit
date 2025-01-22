@@ -4,3 +4,5 @@ non_profit.patches.create_employer_name_field
 non_profit.patches.create_cdp_hour_custom_fields
 non_profit.patches.create_start_and_end_date_in_non_profit_settings
 non_profit.patches.create_membership_field_sales_invoice
+non_profit.patches.create_member_field
+non_profit.patches.property_setter_for_employee
