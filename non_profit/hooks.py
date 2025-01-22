@@ -36,7 +36,8 @@ required_apps = ["erpnext"]
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 doctype_js = {
-	"Sales Invoice": "public/js/payment_entry.js"
+	"Sales Invoice": "public/js/payment_entry.js",
+	"Training Result": "non_profit/custom_doctype/training_result.js"
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -110,13 +111,22 @@ override_doctype_class = {
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
-# }
+doc_events = {
+    "Training Result": {
+		"validate": "non_profit.non_profit.custom_doctype.training_results.validate",
+		"on_submit": "non_profit.non_profit.custom_doctype.training_results.on_submit",
+    },
+    "Training Feedback": {
+		"validate": "non_profit.non_profit.custom_doctype.training_feedback.validate",
+		"on_submit": "non_profit.non_profit.custom_doctype.training_feedback.on_submit",
+		"on_cancel": "non_profit.non_profit.custom_doctype.training_feedback.on_cancel",
+    },
+	# "*": {
+	# 	"on_update": "method",
+	# 	"on_cancel": "method",
+	# 	"on_trash": "method"
+	# }
+}
 
 # Scheduled Tasks
 # ---------------
