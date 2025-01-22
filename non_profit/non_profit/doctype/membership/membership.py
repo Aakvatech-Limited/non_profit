@@ -402,12 +402,53 @@ def get_plan_from_razorpay_id(plan_id):
 
 
 def set_expired_status():
-	frappe.db.sql("""
-		UPDATE
-			`tabMembership` SET `status` = 'Expired'
-		WHERE
-			`status` not in ('Cancelled') AND `to_date` < %s
-		""", (nowdate()))
+    # Update expired memberships
+    frappe.db.sql("""
+        UPDATE
+            `tabMembership`
+        SET 
+            `membership_status` = 'Expired'
+        WHERE
+            `membership_status` NOT IN ('Cancelled') AND `to_date` < %s
+    """, (nowdate(),))
+    
+    # Handle auto-renewal for eligible members
+    auto_renewal_membership()
+
+
+def auto_renewal_membership():
+    # Fetch members with auto-subscription enabled
+    members = frappe.db.get_all(
+        "Member",
+        filters={'custom_auto_subscription': 1},
+        fields=['member_name']
+    )
+
+    for member in members:
+        # Fetch expired memberships for the member
+        expired_records = frappe.db.sql(
+            """
+            SELECT name, to_date
+            FROM `tabMembership`
+            WHERE `membership_status` = 'Expired' AND `member_name` = %s
+            """,
+            (member['member_name'],),
+            as_dict=True
+        )
+
+        for record in expired_records:
+            start_date, end_date = frappe.db.get_value('Non Profit Settings', ['start_date', 'end_date'])
+            
+            # Calculate new dates for renewal
+            name = record['name']
+            from_date = start_date
+            to_date = end_date
+
+            # Update membership with new dates
+            frappe.db.set_value('Membership', name, {
+                'from_date': from_date,
+                'to_date': to_date
+            })
 
 
 def get_last_membership(member):
@@ -418,3 +459,91 @@ def get_last_membership(member):
 
 	if last_membership:
 		return last_membership[0]
+
+
+
+@frappe.whitelist()
+def generate_bulk_invoice(doc, self, save=True, with_payment_entry=False):
+    # frappe.throw(str(doc))
+
+    # Fetch members linked to this employer
+    members = frappe.db.get_all(
+        "Member",
+        filters={
+            'invoice_to': 'Member'
+        },
+        fields=['name', 'member_name', 'customer']
+    )
+    member_count = len(members)
+
+    # Validate members
+    if not members:
+        frappe.throw(_("No members found linked to this employer."))
+
+    for member in members:
+        # Check if customer is linked to the member
+        if not member['customer']:
+            frappe.throw(_("No customer linked to member {0}.")
+                         .format(frappe.bold(member['member_name'])))
+
+        # Fetch membership details
+        membership_doc = frappe.db.exists(
+						"Membership",
+						{
+							'member': member['name'],
+							'membership_status': ['=', 'Current']
+						}
+					)
+
+        if not membership_doc:
+            # frappe.msgprint(_("Membership not found for member {0}. Skipping.".format(member['member_name'])))
+            continue
+
+        membership_doc = frappe.get_doc("Membership", membership_doc)
+
+        # Check for existing invoices
+        if membership_doc.invoice:
+            frappe.throw(_("An invoice is already linked to member {0}.")
+                         .format(member['member_name']))
+
+        # Validate membership type and settings
+        plan = frappe.get_doc("Membership Type", membership_doc.membership_type)
+        settings = frappe.get_doc("Non Profit Settings")
+        if not settings.membership_debit_account:
+            frappe.throw(_("You need to set <b>Debit Account</b> in {0}").format(settings_link))
+        if not settings.company:
+            frappe.throw(_("You need to set <b>Default Company</b> for invoicing in {0}").format(settings_link))
+        if not plan.linked_item:
+            frappe.throw(_("Please set a Linked Item for the Membership Type {0}").format(get_link_to_form("Membership Type", self.membership_type)))
+        
+
+        # Generate the invoice
+        invoice = frappe.get_doc({
+			"doctype": "Sales Invoice",
+			"customer": member.customer,
+			"debit_to": settings.membership_debit_account,
+			"currency": membership_doc.currency,
+			"company": settings.company,
+			"is_pos": 0,
+            "items": [
+                {
+                    "item_code": plan.linked_item,
+                    "rate": membership_doc.amount,
+                	"membership_id": membership_doc.name,
+                    "qty": 1
+                }
+            ]
+        })
+        invoice.set_missing_values()
+        invoice.insert()
+        invoice.submit()
+        
+        frappe.msgprint(_("Sales Invoice created successfully"))
+        
+        # Update member record
+        frappe.db.set_value("Membership", membership_doc.name, {
+            
+            'invoice': invoice.name
+        })
+
+    return invoice
