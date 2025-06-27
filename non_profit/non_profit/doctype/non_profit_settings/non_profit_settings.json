@@ -10,6 +10,9 @@
   "billing_cycle",
   "billing_frequency",
   "membership_webhook_secret",
+  "column_break_npol",
+  "start_date",
+  "end_date",
   "column_break_6",
   "allow_invoicing",
   "automate_membership_invoicing",
@@ -227,12 +230,26 @@
    "label": "Creation User",
    "options": "User",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_npol",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-01-12 17:32:11.613827",
+ "modified": "2025-06-27 11:51:56.498228",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Non Profit Settings",
@@ -267,6 +284,7 @@
   }
  ],
  "quick_entry": 1,
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
