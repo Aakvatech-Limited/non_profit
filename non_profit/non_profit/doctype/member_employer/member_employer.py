@@ -10,13 +10,24 @@ from frappe.utils import get_link_to_form
 
 class MemberEmployer(Document):
     def before_save(self):
+        # Use a suffix for Customer Group to avoid name conflict
+        customer_group_name = f"{self.member_employer_name} Member"
+        if not frappe.db.exists("Customer Group", customer_group_name):
+            customer_group = frappe.get_doc({
+                'doctype': 'Customer Group',
+                'customer_group_name': customer_group_name
+            })
+            customer_group.insert(ignore_permissions=True)
+        else:
+            customer_group = frappe.get_doc("Customer Group", customer_group_name)
+
         # Create a new Customer if it doesn't exist
         if not frappe.db.exists("Customer", {"customer_name": self.member_employer_name}):
             doc = frappe.get_doc({
                 'doctype': 'Customer',
                 'customer_name': self.member_employer_name,
                 'customer_type': 'Company',
-                'customer_group': 'IIA Members',
+                'customer_group': customer_group.name,
                 'territory': 'All Territories'
             })
             doc.insert(ignore_permissions=True)
