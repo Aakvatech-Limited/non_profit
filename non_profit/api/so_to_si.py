@@ -2,7 +2,7 @@ import frappe
 from erpnext.selling.doctype.sales_order.sales_order import make_sales_invoice
 
 @frappe.whitelist()
-def create_and_submit_sales_invoice(source_name):
+def create_and_submit_sales_invoice(sales_order):
     """
     Create and submit Sales Invoice from Sales Order
     :param source_name: Sales Order ID (e.g. "SAL-ORD-2025-00001")
