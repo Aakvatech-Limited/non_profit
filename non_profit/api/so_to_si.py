@@ -14,8 +14,12 @@ def create_and_submit_sales_invoice(sales_order):
     if not sales_order or not sales_order.items:
         frappe.throw(f"Sales Invoice cannot be created because Sales Order {sales_order} has no items.")
 
+    # Check if Sales Order is submitted
+    if so_doc.docstatus != 1:
+        frappe.throw(f"Sales Order {sales_order} must be submitted before creating a Sales Invoice.")
+    
     # Generate Sales Invoice from Sales Order
-    invoice = make_sales_invoice(sales_order)
+    invoice = make_sales_invoice(sales_order.name)
 
     # Insert and submit the Sales Invoice
     invoice.insert(ignore_permissions=True)
