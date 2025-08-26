@@ -19,6 +19,7 @@ def create_and_submit_sales_invoice(sales_order):
 
     # Insert and submit the Sales Invoice
     invoice.insert(ignore_permissions=True)
+    invoice.save()
     invoice.submit()
 
     # Commit transaction
