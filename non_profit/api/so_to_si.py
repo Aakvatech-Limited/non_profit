@@ -23,7 +23,7 @@ def create_and_submit_sales_invoice(sales_order):
     invoice.submit()
 
     # Commit transaction
-    frappe.db.commit()
+    
 
     return {
         "invoice_name": invoice.name,
