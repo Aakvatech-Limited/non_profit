@@ -23,7 +23,10 @@ def create_and_submit_sales_invoice(sales_order, payment_reference=None):
         frappe.throw(f"Sales Order {sales_order} must be submitted before creating a Sales Invoice.")
     
     # Generate Sales Invoice from Sales Order
-    invoice = make_sales_invoice(sales_order_doc.name)  
+    invoice = make_sales_invoice(sales_order_doc.name)
+
+    # Automatically enable VFD auto-generation
+    invoice.is_auto_generate_vfd = 1
 
     # Insert and submit the Sales Invoice
     invoice.insert(ignore_permissions=True)
