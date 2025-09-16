@@ -55,9 +55,10 @@ def create_and_submit_sales_invoice(sales_order, payment_reference=None):
             payment_entry.posting_date = frappe.utils.nowdate()
             payment_entry.insert()
             payment_entry.submit()
+            frappe.db.set_value("Sales Invoice", invoice.name, "payment_reference", payment_reference)
             result["payment_entry"] = payment_entry.name
             result["message"] += f" Payment Entry {payment_entry.name} created as well."
-    
+            
         return result
 
     except Exception as e:
