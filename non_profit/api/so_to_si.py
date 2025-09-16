@@ -21,32 +21,46 @@ def create_and_submit_sales_invoice(sales_order, payment_reference=None):
     # Check if Sales Order is submitted
     if sales_order_doc.docstatus != 1:
         frappe.throw(f"Sales Order {sales_order} must be submitted before creating a Sales Invoice.")
+
+    try:
+        # Generate Sales Invoice from Sales Order
+        invoice = make_sales_invoice(sales_order_doc.name)
     
-    # Generate Sales Invoice from Sales Order
-    invoice = make_sales_invoice(sales_order_doc.name)
-
-    # Automatically enable VFD auto-generation
-    invoice.is_auto_generate_vfd = 1
-
-    # Insert and submit the Sales Invoice
-    invoice.insert(ignore_permissions=True)
-    invoice.submit()
+        # Insert and submit the Sales Invoice
+        invoice.insert(ignore_permissions=True)
+        
+        # Automatically enable VFD auto-generation
+        invoice.is_auto_generate_vfd = 1
     
-    result = {
-        "invoice_name": invoice.name,
-        "status": invoice.status,
-        "message": f"Sales Invoice {invoice.name} created and submitted successfully."
-    }
+        invoice.save(ignore_permissions=True)
+        
+        invoice.submit()
+    
+        
+        result = {
+            "invoice_name": invoice.name,
+            "status": invoice.status,
+            "message": f"Sales Invoice {invoice.name} created and submitted successfully."
+        }
+    
+        # Create Payment Entry only if payment_reference is given
+        if payment_reference:
+            payment_entry = get_payment_entry("Sales Invoice", invoice.name)
+            payment_entry.reference_no = payment_reference
+            payment_entry.reference_date = frappe.utils.nowdate()
+            payment_entry.posting_date = frappe.utils.nowdate()
+            payment_entry.insert()
+            payment_entry.submit()
+            result["payment_entry"] = payment_entry.name
+            result["message"] += f" Payment Entry {payment_entry.name} created as well."
+    
+        return result
 
-    # Create Payment Entry only if payment_reference is given
-    if payment_reference:
-        payment_entry = get_payment_entry("Sales Invoice", invoice.name)
-        payment_entry.reference_no = payment_reference
-        payment_entry.reference_date = frappe.utils.nowdate()
-        payment_entry.posting_date = frappe.utils.nowdate()
-        payment_entry.insert()
-        payment_entry.submit()
-        result["payment_entry"] = payment_entry.name
-        result["message"] += f" Payment Entry {payment_entry.name} created as well."
-
-    return result
+    except Exception as e:
+        traceback = frappe.get_traceback()
+        msg = f"Invoice Creation Error: {invoice.name}\n\n<br>str(e)\n\n<br>Traceback:\n<br>{traceback}"
+        frappe.log_error(
+            title="SO to SI Error",
+            message=msg
+        )
+        
