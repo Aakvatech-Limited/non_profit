@@ -1,5 +1,6 @@
 import frappe
 from frappe import _
+from time import sleep
 from erpnext.selling.doctype.sales_order.sales_order import make_sales_invoice
 from erpnext.accounts.doctype.payment_entry.payment_entry import get_payment_entry
 
@@ -35,6 +36,9 @@ def create_and_submit_sales_invoice(sales_order, payment_reference=None):
         invoice.save(ignore_permissions=True)
         
         invoice.submit()
+
+        # sleep invoice for 10 seconds to avoid document already modified
+        sleep(2)
     
         
         result = {
