@@ -87,7 +87,6 @@ def re_issue_sales_order(sales_order):
 
         # Cancel the original Sales Order
         so_doc.cancel()
-        # frappe.throw(f"Sales Order {sales_order} cancelled successfully.")
 
         # Create a new amended Sales Order
         new_so = frappe.copy_doc(so_doc)
@@ -95,7 +94,6 @@ def re_issue_sales_order(sales_order):
         new_so.docstatus = 0  # reset to draft
         new_so.insert(ignore_permissions=True)
         new_so.save(ignore_permissions=True)
-        # frappe.throw(f"Sales Order {sales_order} amended successfully.")
         # Submit the new Sales Order
         new_so.submit()
 
