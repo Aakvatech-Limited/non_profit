@@ -69,3 +69,44 @@ def create_and_submit_sales_invoice(sales_order, payment_reference=None):
             message=msg
         )
         
+@frappe.whitelist()
+def re_issue_sales_order(sales_order):
+    """
+    Cancel the given Sales Order, create an amended copy, and submit it.
+    :param sales_order: Sales Order ID (e.g. "SAL-ORD-2025-00001")
+    :return: dict with old and new Sales Order details
+    """
+
+    try:
+        # Fetch the Sales Order
+        so_doc = frappe.get_doc("Sales Order", sales_order)
+
+        # Ensure the Sales Order is submitted
+        if so_doc.docstatus != 1:
+            frappe.throw(f"Sales Order {sales_order} must be submitted before it can be cancelled and amended.")
+
+        # Cancel the original Sales Order
+        so_doc.cancel()
+        # frappe.throw(f"Sales Order {sales_order} cancelled successfully.")
+
+        # Create a new amended Sales Order
+        new_so = frappe.copy_doc(so_doc)
+        new_so.amended_from = so_doc.name
+        new_so.docstatus = 0  # reset to draft
+        new_so.insert(ignore_permissions=True)
+        new_so.save(ignore_permissions=True)
+        # frappe.throw(f"Sales Order {sales_order} amended successfully.")
+        # Submit the new Sales Order
+        new_so.submit()
+
+        # Return success info
+        return {
+            "old_sales_order": so_doc.name,
+            "new_sales_order": new_so.name,
+            "status": "Success",
+            "message": f"Sales Order {so_doc.name} was cancelled and amended as {new_so.name}."
+        }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Cancel & Amend Sales Order Error")
+        frappe.throw(f"Failed to cancel and amend Sales Order {sales_order}: {str(e)}")
