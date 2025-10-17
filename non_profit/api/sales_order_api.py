@@ -96,6 +96,7 @@ def re_issue_sales_order(sales_order):
         new_so.save(ignore_permissions=True)
         # Submit the new Sales Order
         new_so.submit()
+        frappe.db.commit()
 
         # Return success info
         return {
