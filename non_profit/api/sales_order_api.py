@@ -93,7 +93,7 @@ def re_issue_sales_order(sales_order):
         new_so.amended_from = so_doc.name
         new_so.docstatus = 0  # reset to draft
         new_so.insert(ignore_permissions=True)
-        new_so.payment_status = "Scheduled"
+        new_so.payment_status = "scheduled"
         new_so.save(ignore_permissions=True)
         # Submit the new Sales Order
         new_so.submit()
