@@ -81,6 +81,10 @@ def re_issue_sales_order(sales_order):
         # Fetch the Sales Order
         so_doc = frappe.get_doc("Sales Order", sales_order)
 
+        # Safely get optional fields
+        url = getattr(so_doc, "payment_url", None)
+        control_number = getattr(so_doc, "payment_control_number", None)
+
         # Ensure the Sales Order is submitted
         if so_doc.docstatus != 1:
             frappe.throw(f"Sales Order {sales_order} must be submitted before it can be cancelled and amended.")
@@ -93,8 +97,16 @@ def re_issue_sales_order(sales_order):
         new_so.amended_from = so_doc.name
         new_so.docstatus = 0  # reset to draft
         new_so.insert(ignore_permissions=True)
+
+        # Set optional fields only if available
+        if url:
+            new_so.payment_url = url
+        if control_number:
+            new_so.payment_control_number = control_number
+
         new_so.payment_status = "scheduled"
         new_so.save(ignore_permissions=True)
+
         # Submit the new Sales Order
         new_so.submit()
         frappe.db.commit()
