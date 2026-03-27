@@ -53,6 +53,7 @@ def create_and_submit_sales_invoice(sales_order, payment_reference=None):
             payment_entry.reference_no = payment_reference
             payment_entry.reference_date = frappe.utils.nowdate()
             payment_entry.posting_date = frappe.utils.nowdate()
+            payment_entry.paid_to = "Selcom Bank Account - IIAT"
             payment_entry.insert()
             payment_entry.submit()
             frappe.db.set_value("Sales Invoice", invoice.name, "payment_reference", payment_reference)
