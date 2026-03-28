@@ -5,7 +5,7 @@ from erpnext.selling.doctype.sales_order.sales_order import make_sales_invoice
 from erpnext.accounts.doctype.payment_entry.payment_entry import get_payment_entry
 
 @frappe.whitelist()
-def create_and_submit_sales_invoice(sales_order, payment_reference=None):
+def create_and_submit_sales_invoice(sales_order, payment_reference=None, transaction_referance=None):
     """
     Create and submit Sales Invoice from Sales Order.
     If payment_reference is provided, create a Payment Entry as well.
@@ -32,6 +32,8 @@ def create_and_submit_sales_invoice(sales_order, payment_reference=None):
         
         # Automatically enable VFD auto-generation
         invoice.is_auto_generate_vfd = 1
+        invoice.payment_reference = payment_reference
+        invoice.transaction_referance = transaction_referance
     
         invoice.save(ignore_permissions=True)
         
@@ -50,7 +52,8 @@ def create_and_submit_sales_invoice(sales_order, payment_reference=None):
         # Create Payment Entry only if payment_reference is given
         if payment_reference:
             payment_entry = get_payment_entry("Sales Invoice", invoice.name)
-            payment_entry.reference_no = payment_reference
+            payment_entry.reference_no = transaction_referance
+            payment_entry.reference_url = payment_reference
             payment_entry.reference_date = frappe.utils.nowdate()
             payment_entry.posting_date = frappe.utils.nowdate()
             payment_entry.paid_to = "Selcom Bank Account - IIAT"
