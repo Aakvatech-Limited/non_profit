@@ -121,6 +121,12 @@ doc_events = {
 		"on_submit": "non_profit.non_profit.custom_doctype.training_feedback.on_submit",
 		"on_cancel": "non_profit.non_profit.custom_doctype.training_feedback.on_cancel",
     },
+	"Sales Invoice": {
+		"on_submit": "non_profit.non_profit.custom_doctype.sales_invoice.on_submit",
+	},
+	"Payment Entry": {
+		"on_submit": "non_profit.non_profit.custom_doctype.payment_entry_events.on_submit",
+	},
 	# "*": {
 	# 	"on_update": "method",
 	# 	"on_cancel": "method",
