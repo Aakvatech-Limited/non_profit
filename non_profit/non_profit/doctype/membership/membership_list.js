@@ -13,22 +13,22 @@ frappe.listview_settings['Membership'] = {
 		}
 	},
     onload: function (listview) {
-        listview.page.add_menu_item(__('Bulk Invoicing'), async function () {
+        listview.page.add_menu_item(__('Bulk Sales Orders'), async function () {
             const selected_docs = listview.get_checked_items();
             if (selected_docs.length === 0) {
                 frappe.msgprint(__('Please select at least one document.'));
                 return;
             }
 			frappe.call({
-				method: 'non_profit.non_profit.doctype.membership.membership.generate_bulk_invoice',
+				method: 'non_profit.non_profit.doctype.membership.membership.generate_bulk_sales_order',
 				args: {
 					doc: selected_docs
 				},
 				freeze: true,
-				freeze_message: __("Creating Bulk Membership Invoice"),
+				freeze_message: __("Creating Bulk Membership Sales Orders"),
 				callback: function(r) {
-					if (r.invoice)
-						frappe.msgprint(_("Sales Invoice created successfully"))
+					if (r.message)
+						frappe.msgprint(_("Sales Order(s) created successfully"))
 				}
 			   });
 			console.log(selected_docs);

@@ -23,6 +23,7 @@
   "amount",
   "column_break_16",
   "invoice",
+  "sales_order",
   "razorpay_details_section",
   "subscription_id",
   "column_break_19",
@@ -92,7 +93,8 @@
    "default": "0",
    "fieldname": "paid",
    "fieldtype": "Check",
-   "label": "Paid"
+   "label": "Paid",
+   "read_only": 1
   },
   {
    "fieldname": "currency",
@@ -124,7 +126,15 @@
    "fieldname": "invoice",
    "fieldtype": "Link",
    "label": "Invoice",
-   "options": "Sales Invoice"
+   "options": "Sales Invoice",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order",
+   "read_only": 1
   },
   {
    "fetch_from": "member.member_name",
@@ -141,20 +151,21 @@
    "reqd": 1
   },
   {
-    "fieldname": "column_break_19",
-    "fieldtype": "Column Break"
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
   },
   {
-    "fieldname": "column_break_16",
-    "fieldtype": "Column Break"
+   "fieldname": "column_break_16",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-03-16 17:37:28.672916",
+ "modified": "2026-05-21 14:41:24.672045",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Membership",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -183,9 +194,11 @@
   }
  ],
  "restrict_to_domain": "Non Profit",
+ "row_format": "Dynamic",
  "search_fields": "member, member_name",
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "title_field": "member_name",
  "track_changes": 1
 }
