@@ -11,10 +11,12 @@
   "member_name",
   "membership_expiry_date",
   "column_break_5",
+  "employer_name",
   "membership_type",
   "email_id",
   "image",
   "customer_section",
+  "invoice_to",
   "customer",
   "customer_name",
   "supplier_section",
@@ -166,11 +168,23 @@
    "fieldtype": "Select",
    "label": "Subscription Status",
    "options": "\nActive\nHalted"
+  },
+  {
+   "fieldname": "invoice_to",
+   "fieldtype": "Select",
+   "label": "Invoice To",
+   "options": "\nMember\nMember Employer"
+  },
+  {
+   "fieldname": "employer_name",
+   "fieldtype": "Link",
+   "label": "Employer Name",
+   "options": "Member Employer"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2021-07-11 14:27:26.368039",
+ "modified": "2026-05-20 12:34:26.003956",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Member",
@@ -203,8 +217,10 @@
  ],
  "quick_entry": 1,
  "restrict_to_domain": "Non Profit",
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "title_field": "member_name",
  "track_changes": 1
 }
