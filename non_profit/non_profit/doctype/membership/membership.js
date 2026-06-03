@@ -12,15 +12,15 @@ frappe.ui.form.on('Membership', {
 		if (frm.doc.__islocal)
 			return;
 
-		!frm.doc.invoice && frm.add_custom_button("Generate Invoice", () => {
+		!frm.doc.sales_order && frm.add_custom_button("Generate Sales Order", () => {
 			frm.call({
 				doc: frm.doc,
-				method: "generate_invoice",
+				method: "generate_sales_order",
 				args: {save: true},
 				freeze: true,
-				freeze_message: __("Creating Membership Invoice"),
+				freeze_message: __("Creating Membership Sales Order"),
 				callback: function(r) {
-					if (r.invoice)
+					if (r.message)
 						frm.reload_doc();
 				}
 			});

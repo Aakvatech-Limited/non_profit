@@ -11,6 +11,7 @@
  "field_order": [
   "member_employer_name",
   "invoice",
+  "sales_order",
   "column_break_ohwsc",
   "paid",
   "section_break_o5qep",
@@ -28,6 +29,13 @@
    "fieldtype": "Link",
    "label": "Invoice",
    "options": "Sales Invoice",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order",
    "read_only": 1
   },
   {
@@ -53,8 +61,13 @@
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2025-01-16 10:08:14.843127",
+ "links": [
+  {
+   "link_doctype": "Member",
+   "link_fieldname": "employer_name"
+  }
+ ],
+ "modified": "2026-05-21 11:48:39.621045",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Member Employer",
@@ -75,6 +88,7 @@
   }
  ],
  "quick_entry": 1,
+ "row_format": "Dynamic",
  "search_fields": "member_employer_name",
  "sort_field": "modified",
  "sort_order": "DESC",

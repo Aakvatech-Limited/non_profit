@@ -5,15 +5,15 @@ frappe.ui.form.on('Member Employer', {
     refresh(frm) {
         // Check if the document is saved (not new)
         if (!frm.is_new()) {
-            frm.add_custom_button(__('Bulk Membership Invoicing'), function() {
+            frm.add_custom_button(__('Bulk Membership Sales Order'), function() {
 				frm.call({
 					doc: frm.doc,
-					method: "generate_bulk_invoice",
+					method: "generate_bulk_sales_order",
 					args: {save: true},
 					freeze: true,
-					freeze_message: __("Creating Bulk Membership Invoice"),
+					freeze_message: __("Creating Bulk Membership Sales Order"),
 					callback: function(r) {
-						if (r.invoice)
+						if (r.message)
 							frm.reload_doc();
 					}
 				});
