@@ -10,7 +10,7 @@ app_color = "grey"
 app_email = "pandikunta@frappe.io"
 app_license = "MIT"
 
-required_apps = ["erpnext"]
+required_apps = ["erpnext", "payments"]
 
 # Includes in <head>
 # ------------------
@@ -18,10 +18,6 @@ required_apps = ["erpnext"]
 # include js, css files in header of desk.html
 # app_include_css = "/assets/non_profit/css/non_profit.css"
 # app_include_js = "/assets/non_profit/js/non_profit.js"
-
-# include js, css files in header of web template
-# web_include_css = "/assets/non_profit/css/non_profit.css"
-# web_include_js = "/assets/non_profit/js/non_profit.js"
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "non_profit/public/scss/website"
@@ -169,7 +165,6 @@ before_tests = "non_profit.non_profit.utils.before_tests"
 
 # User Data Protection
 # --------------------
-
 # user_data_fields = [
 # 	{
 # 		"doctype": "{doctype_1}",
