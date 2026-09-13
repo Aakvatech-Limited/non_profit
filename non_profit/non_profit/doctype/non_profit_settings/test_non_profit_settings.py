@@ -21,13 +21,18 @@ class TestNonProfitSettings(unittest.TestCase):
 		for app in hooks.required_apps:
 			self.assertIn(app, dependencies)
 
-	def test_frappe_app_dependencies_target_version_16(self):
+	def test_frappe_and_erpnext_target_version_16(self):
 		pyproject = self._get_pyproject()
 		dependencies = pyproject["tool"]["bench"]["frappe-dependencies"]
 		expected_range = ">=16.0.0,<17.0.0"
 
-		for app in ("frappe", "erpnext", "payments"):
+		for app in ("frappe", "erpnext"):
 			self.assertEqual(dependencies.get(app), expected_range)
+
+	def test_payments_dependency_matches_version_16_app_versioning(self):
+		pyproject = self._get_pyproject()
+		dependencies = pyproject["tool"]["bench"]["frappe-dependencies"]
+		self.assertEqual(dependencies.get("payments"), ">=0.0.1,<1.0.0")
 
 	def test_payments_utility_import_resolves(self):
 		module = importlib.import_module("payments.utils")
