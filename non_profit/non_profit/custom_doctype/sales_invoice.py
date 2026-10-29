@@ -95,7 +95,14 @@ def update_linked_membership_and_employer_invoices(doc):
 		membership = frappe.get_doc("Membership", membership_id)
 		updates = {"invoice": doc.name}
 		if not membership.sales_order and doc.items:
-			sales_order_name = next((d.sales_order for d in doc.items if d.get("membership_id") == membership_id and d.sales_order), None)
+			sales_order_name = next(
+				(
+					d.sales_order
+					for d in doc.items
+					if d.get("membership_id") == membership_id and d.sales_order
+				),
+				None,
+			)
 			if sales_order_name:
 				updates["sales_order"] = sales_order_name
 		frappe.db.set_value("Membership", membership.name, updates, update_modified=False)

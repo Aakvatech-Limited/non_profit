@@ -11,17 +11,16 @@ QUnit.test("test: Volunteer Type", function (assert) {
 	frappe.run_serially([
 		// insert a new Member
 		() => {
-			return frappe.tests.make('Volunteer Type', [
+			return frappe.tests.make("Volunteer Type", [
 				// values to be set
-				{__newname: 'Test Work'},
-				{amount: 500}
+				{ __newname: "Test Work" },
+				{ amount: 500 },
 			]);
 		},
 		() => {
-			assert.equal(cur_frm.doc.name, 'Test Work');
+			assert.equal(cur_frm.doc.name, "Test Work");
 			assert.equal(cur_frm.doc.amount, 500);
 		},
-		() => done()
+		() => done(),
 	]);
-
 });

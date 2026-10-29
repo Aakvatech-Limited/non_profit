@@ -4,6 +4,7 @@
 import importlib
 import unittest
 from pathlib import Path
+
 import tomllib
 
 from non_profit import hooks

@@ -6,8 +6,8 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.utils import add_days, add_months, add_years, get_link_to_form, getdate, nowdate
-
 from payments.utils import get_payment_gateway_controller
+
 
 class NonProfitSettings(Document):
 	@frappe.whitelist()
@@ -19,8 +19,12 @@ class NonProfitSettings(Document):
 		secret_for = "Membership" if field == "membership_webhook_secret" else "Donation"
 
 		frappe.msgprint(
-			_("Here is your webhook secret for {0} API, this will be shown to you only once.").format(secret_for) + "<br><br>" + key,
-			_("Webhook Secret")
+			_("Here is your webhook secret for {0} API, this will be shown to you only once.").format(
+				secret_for
+			)
+			+ "<br><br>"
+			+ key,
+			_("Webhook Secret"),
 		)
 
 	@frappe.whitelist()
@@ -31,11 +35,13 @@ class NonProfitSettings(Document):
 	def get_webhook_secret(self, endpoint="Membership"):
 		fieldname = "membership_webhook_secret" if endpoint == "Membership" else "donation_webhook_secret"
 		return self.get_password(fieldname=fieldname, raise_exception=False)
+
 	def validate(self):
-		if frappe.db.get_single_value("Non Profit Settings", "billing_cycle") == "Yearly":
+		if self.billing_cycle == "Yearly":
 			self.end_date = add_years(self.start_date, 1)
 		else:
-			self.end_date = add_months(self.end_date, 1)
+			self.end_date = add_months(self.start_date, 1)
+
 
 @frappe.whitelist()
 def get_plans_for_membership(*args, **kwargs):

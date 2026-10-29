@@ -10,17 +10,17 @@ QUnit.test("test: Member", function (assert) {
 
 	frappe.run_serially([
 		// insert a new Member
-		() => frappe.tests.make('Member', [
-			// values to be set
-			{member_name: 'Test Member'},
-			{membership_type: 'Gold'},
-			{email: 'test@example.com'}
-		]),
+		() =>
+			frappe.tests.make("Member", [
+				// values to be set
+				{ member_name: "Test Member" },
+				{ membership_type: "Gold" },
+				{ email: "test@example.com" },
+			]),
 		() => {
-			assert.equal(cur_frm.doc.membership_type, 'Gold');
-			assert.equal(cur_frm.doc.email, 'test@example.com');
+			assert.equal(cur_frm.doc.membership_type, "Gold");
+			assert.equal(cur_frm.doc.email, "test@example.com");
 		},
-		() => done()
+		() => done(),
 	]);
-
 });

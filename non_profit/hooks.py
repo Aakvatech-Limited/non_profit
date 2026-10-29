@@ -1,16 +1,26 @@
 from frappe import _
 
-
 app_name = "non_profit"
 app_title = "Non Profit"
 app_publisher = "Frappe"
 app_description = "Non Profit"
-app_icon = "octicon octicon-file-directory"
-app_color = "grey"
+app_icon = "heart-handshake"
+app_color = "#0f766e"
 app_email = "pandikunta@frappe.io"
 app_license = "MIT"
 
-required_apps = ["erpnext", "payments"]
+required_apps = ["erpnext", "payments", "hrms"]
+app_logo_url = "/assets/non_profit/images/non_profit-logo.svg"
+
+# No "route": a bare `/desk/<module>` is not a page in v16, so the apps screen lands on the
+# first entry of the app's Dock (the Non Profit sidebar) instead.
+add_to_apps_screen = [
+	{
+		"name": "non_profit",
+		"logo": app_logo_url,
+		"title": "Non Profit",
+	}
+]
 
 # Includes in <head>
 # ------------------
@@ -33,7 +43,7 @@ required_apps = ["erpnext", "payments"]
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 doctype_js = {
 	"Sales Invoice": "public/js/payment_entry.js",
-	"Training Result": "non_profit/custom_doctype/training_result.js"
+	"Training Result": "non_profit/custom_doctype/training_result.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -47,7 +57,7 @@ doctype_js = {
 
 # website user home page (by Role)
 # role_home_page = {
-#	"Role": "home_page"
+# "Role": "home_page"
 # }
 
 # Generators
@@ -97,10 +107,11 @@ after_install = "non_profit.setup.setup_non_profit"
 
 # DocType Class
 # ---------------
-# Override standard doctype classes
+# Override or extend standard doctype classes
 
-override_doctype_class = {
-	"Payment Entry": "non_profit.non_profit.custom_doctype.payment_entry.NonProfitPaymentEntry",
+# Extend rather than override: hrms already overrides the Payment Entry class.
+extend_doctype_class = {
+	"Payment Entry": ["non_profit.non_profit.custom_doctype.payment_entry.NonProfitPaymentEntry"],
 }
 
 # Document Events
@@ -108,15 +119,15 @@ override_doctype_class = {
 # Hook on document methods and events
 
 doc_events = {
-    "Training Result": {
+	"Training Result": {
 		"validate": "non_profit.non_profit.custom_doctype.training_results.validate",
 		"on_submit": "non_profit.non_profit.custom_doctype.training_results.on_submit",
-    },
-    "Training Feedback": {
+	},
+	"Training Feedback": {
 		"validate": "non_profit.non_profit.custom_doctype.training_feedback.validate",
 		"on_submit": "non_profit.non_profit.custom_doctype.training_feedback.on_submit",
 		"on_cancel": "non_profit.non_profit.custom_doctype.training_feedback.on_cancel",
-    },
+	},
 	"Sales Invoice": {
 		"on_submit": "non_profit.non_profit.custom_doctype.sales_invoice.on_submit",
 	},
@@ -196,21 +207,26 @@ before_tests = "non_profit.non_profit.utils.before_tests"
 
 global_search_doctypes = {
 	"Non Profit": [
-		{'doctype': 'Certified Consultant', 'index': 1},
-		{'doctype': 'Certification Application', 'index': 2},
-		{'doctype': 'Volunteer', 'index': 3},
-		{'doctype': 'Membership', 'index': 4},
-		{'doctype': 'Member', 'index': 5},
-		{'doctype': 'Donor', 'index': 6},
-		{'doctype': 'Chapter', 'index': 7},
-		{'doctype': 'Grant Application', 'index': 8},
-		{'doctype': 'Volunteer Type', 'index': 9},
-		{'doctype': 'Donor Type', 'index': 10},
-		{'doctype': 'Membership Type', 'index': 11}
+		{"doctype": "Certified Consultant", "index": 1},
+		{"doctype": "Certification Application", "index": 2},
+		{"doctype": "Volunteer", "index": 3},
+		{"doctype": "Membership", "index": 4},
+		{"doctype": "Member", "index": 5},
+		{"doctype": "Donor", "index": 6},
+		{"doctype": "Chapter", "index": 7},
+		{"doctype": "Grant Application", "index": 8},
+		{"doctype": "Volunteer Type", "index": 9},
+		{"doctype": "Donor Type", "index": 10},
+		{"doctype": "Membership Type", "index": 11},
 	]
 }
 
+# nosemgrep: frappe-semgrep-rules.rules.frappe-breaks-multitenancy
 standard_portal_menu_items = [
-	{"title": _("Certification"), "route": "/certification",
-	 "reference_doctype": "Certification Application", "role": "Non Profit Portal User"},
+	{
+		"title": _("Certification"),
+		"route": "/certification",
+		"reference_doctype": "Certification Application",
+		"role": "Non Profit Portal User",
+	},
 ]

@@ -1,0 +1,23 @@
+{
+ "app": "non_profit",
+ "creation": "2026-10-23 15:59:20.000000",
+ "docstatus": 0,
+ "doctype": "Dock",
+ "idx": 0,
+ "items": [
+  {
+   "added": 0,
+   "hidden": 0,
+   "icon": "heart-handshake",
+   "link_to": "Non Profit",
+   "link_type": "Sidebar",
+   "title": "Non Profit"
+  }
+ ],
+ "modified": "2026-10-23 15:59:20.000000",
+ "modified_by": "Administrator",
+ "name": "non_profit",
+ "owner": "Administrator",
+ "standard": 1,
+ "user": ""
+}

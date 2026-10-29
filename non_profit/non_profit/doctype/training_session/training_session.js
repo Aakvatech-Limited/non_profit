@@ -1,7 +1,7 @@
 // Copyright (c) 2024, Frappe and contributors
 // For license information, please see license.txt
 
-frappe.ui.form.on('Training Session', {
+frappe.ui.form.on("Training Session", {
 	onload_post_render: function (frm) {
 		frm.get_field("members").grid.set_multiple_add("member");
 	},

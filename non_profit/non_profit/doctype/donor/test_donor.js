@@ -10,18 +10,18 @@ QUnit.test("test: Donor", function (assert) {
 
 	frappe.run_serially([
 		// insert a new Member
-		() => frappe.tests.make('Donor', [
-			// values to be set
-			{donor_name: 'Test Donor'},
-			{donor_type: 'Test Organization'},
-			{email: 'test@example.com'}
-		]),
+		() =>
+			frappe.tests.make("Donor", [
+				// values to be set
+				{ donor_name: "Test Donor" },
+				{ donor_type: "Test Organization" },
+				{ email: "test@example.com" },
+			]),
 		() => {
-			assert.equal(cur_frm.doc.donor_name, 'Test Donor');
-			assert.equal(cur_frm.doc.donor_type, 'Test Organization');
-			assert.equal(cur_frm.doc.email, 'test@example.com');
+			assert.equal(cur_frm.doc.donor_name, "Test Donor");
+			assert.equal(cur_frm.doc.donor_type, "Test Organization");
+			assert.equal(cur_frm.doc.email, "test@example.com");
 		},
-		() => done()
+		() => done(),
 	]);
-
 });

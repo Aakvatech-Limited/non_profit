@@ -1,6 +1,7 @@
 import frappe
 from frappe.model.utils.rename_field import rename_field
 
+
 def execute():
 	if frappe.db.table_exists("Donation"):
 		frappe.reload_doc("non_profit", "doctype", "Donation")
